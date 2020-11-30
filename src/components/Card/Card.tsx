@@ -48,11 +48,11 @@ export const Card: React.FC<ICard> = ({ data }) => {
 
 		store.data.find(o => o.id == data.id).qti = count;
 
-		// Debug is on the table
-
 		store.setCart(store.data.filter((o:any) => {
 			return o.qti > 0
 		}));
+
+		localStorage.setItem('cart', JSON.stringify(store.cart));
 	} 	
 
 	useEffect(() => {

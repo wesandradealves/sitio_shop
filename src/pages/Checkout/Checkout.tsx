@@ -4,13 +4,26 @@ import Context from '../../context/';
 
 import { Button } from '@material-ui/core';
 
+import birdUrl from '../../assets/bird.png';
+
 import { 
+	Bird,
+	Modal,
+	ModalInner,
+	ModalText,
+	ModalTitle,
 	CheckoutForm,
 	SidebarTitle,
 	CheckoutTable,
 	Sidebar,
 	Container
 } from './styles';
+
+import {
+	Route as ReactDOMRoute,
+	RouteProps as ReactDOMRouteProps,
+	useHistory,
+} from 'react-router-dom';
 
 import { 
 	Dash,
@@ -21,7 +34,9 @@ import {
 import Form from '../../components/Form';
 
 const Checkout: React.FC = () => {
+	const history = useHistory();
 	const store = useContext(Context);
+	const [modal, setModal] = useState<boolean>(false);
 
 	const handleTotal = (key, arr) => {
 		return arr.reduce((a, b) => a + (b[key] || 0), 0);
@@ -56,6 +71,12 @@ const Checkout: React.FC = () => {
 		name: 'nome'
 	},{
 		type: 'text',
+		placeholder: 'E-mail',
+		value: '',
+		width: '100%',
+		name: 'email'
+	},{
+		type: 'text',
 		placeholder: 'Validade',
 		value: '',
 		width: '70%',
@@ -71,8 +92,56 @@ const Checkout: React.FC = () => {
 	}];	
 
 	const handleForm = (s) => {
-		console.log(s);
-	}    	
+		if(!s.email || s.email == '') {
+        	store.setSignMsg({
+        		status: false,
+        		msg: 'Ocorreram erros ao enviar seu formulário ou os campos não foram preenchidos.'
+        	});				
+		} else {
+			let form : any[] = [];
+			form.push(s);
+
+			let uri = encodeURIComponent(JSON.stringify(form.map((o:any) => {
+				return {
+				  ...form[0],
+				  qti: handleTotal('qti', store.cart),
+				  total: `R$ ${parseFloat(handleTotal('price', store.cart)).toFixed(2)}`,
+				  cart: store.cart
+				}
+			})));
+
+			let http = new XMLHttpRequest();
+
+			http.open("GET", `//dev.uppercreative.com.br/sitio-mail-api/index.php?checkout=${uri}`, true);
+			http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+			http.send();
+
+			http.onreadystatechange = function() {
+				if (http.readyState == 4 && http.status == 200) {
+					if(typeof http.responseText == 'string' && http.responseText !== 'Success') {
+			        	store.setSignMsg({
+			        		status: false,
+			        		msg: 'Ocorreram erros ao enviar seu formulário'
+			        	});	
+					}  else {
+						setModal(!modal);
+					}
+				}
+			}
+		}
+	}    
+
+	const handleCloseModal = () => {
+		setModal(!modal);
+		window.location.href = window.location.origin;
+	}   		
+
+	useEffect(() => {
+		if(!store.cart.length) {
+			history.push("/shop");
+		}
+	}, []);  	
 
 	return (
 		<> 
@@ -115,6 +184,7 @@ const Checkout: React.FC = () => {
 					<SidebarTitle>Como pretende efetuar o pagamento?</SidebarTitle>
 					<CheckoutForm> 
 						<Form 
+							errMsg={store.signMsg.msg}
 							extraInformation={[
 								{
 									label: 'Quantidade de itens',
@@ -125,10 +195,18 @@ const Checkout: React.FC = () => {
 									value: `R$ ${parseFloat(handleTotal('price', store.cart)).toFixed(2)}`
 								}								
 							]}
+							conditional={
+								{
+									name: 'desejo',
+									value: 'Desejo que o sítio entre em contato comigo',
+									defaultFields: ['email','nome'],
+									hideFields: ['card_num','validade','cvv']	
+								}									
+							}
 							buttonLabel="Enviar pedido" 
 							handleSubmit={(s) => handleForm(s)}
 							id="checkout" 
-							formInputs={checkout} />
+							formInputs={checkout} /> 
 					</CheckoutForm>
 				</Sidebar>
 			</Container>
@@ -140,6 +218,13 @@ const Checkout: React.FC = () => {
 					Os produtos poderão sofrer alteração de preço sem aviso prévio.	<br/>			
 				</FooterText>
 			</Footer>			
+			<Modal isShown={modal}>
+				<ModalInner>
+					<ModalTitle>Obrigado pelo seu pedido! <Bird src={birdUrl} /></ModalTitle>
+					<ModalText>Vamos seguir com o processo de pagamento e você receberá um e-mail com a confirmação da sua compra.</ModalText>
+					<Button onClick={(s) => handleCloseModal()}>Voltar ao site</Button>
+				</ModalInner>
+			</Modal>
 		</>
 	);
 };

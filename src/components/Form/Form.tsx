@@ -28,33 +28,57 @@ interface IForm extends InputHTMLAttributes<HTMLInputElement> {
   title?: string;
   subtitle?: string;
   id?: any;
+  conditional?: any;
   buttonLabel: string;
   errMsg?: any;
   extraInformation?: any;
   handleSubmit: any;
 }
 
-export const Form: React.FC<IForm> = ({ id, formInputs, title, subtitle, buttonLabel, errMsg, handleSubmit, extraInformation }) => {
+export const Form: React.FC<IForm> = ({ id, formInputs, title, subtitle, buttonLabel, errMsg, handleSubmit, extraInformation, conditional }) => {
 	const store = useContext(Context);
 	const [state, setState] = useState({id: id});
 
 	const handleChange = (e) => {
+		e.preventDefault();
+
 		const { name, value } = e.target;
 		setState(state => ({ ...state, [name]: value }));
+
+		if(conditional) {
+			for (var i = 0; i < conditional.defaultFields.length; ++i) {
+				document.getElementsByName(conditional.defaultFields[i])[0].style.display = "inline-flex";
+			}			
+			if(conditional.name == name) {
+				for (var i = 0; i < conditional.hideFields.length; ++i) {
+					document.getElementsByName(conditional.hideFields[i])[0].style.display = value !== conditional.value ? "inline-flex" : "none";
+				}
+			}
+		}
 	}    
+
+	useEffect(() => {
+		if(conditional) {
+			let fields = conditional.defaultFields.concat(conditional.hideFields);
+
+			for (var i = 0; i < fields.length; ++i) {
+				document.getElementsByName(fields[i])[0].style.display = 'none';
+			}
+		}
+	}, []);  	
 
 	return (
 		<> 
 			{title ? <PageTitle color="#575d30">{title} <Subtitle>{subtitle}</Subtitle></PageTitle> : null}
-			<Container>
+			<Container name="checkoutForm">
 				{formInputs.map((o:any, i:number) => (
 					<FormGroup className={`type--${o.type}`} flex={o.width} key={i}> 
 						{o.label ? <Label>{o.label}</Label> : null}
-						{o.mask ? <MaskedInput mask={o.mask ? o.mask : ''} value={o.value} name={o.name} onChange={(e) => handleChange(e)} type={o.type} placeholder={o.placeholder} /> 
-							: <input value={o.value} name={o.name} onChange={(e) => handleChange(e)} type={o.type} placeholder={o.placeholder} />}
+						{o.mask ? <MaskedInput required={true} mask={o.mask ? o.mask : ''} name={o.name} onChange={(e) => handleChange(e)} type={o.type} placeholder={o.placeholder} /> 
+							: (o.value ? <input required={true} value={o.value} name={o.name} onChange={(e) => handleChange(e)} type={o.type} placeholder={o.placeholder} /> : <input required={true} name={o.name} onChange={(e) => handleChange(e)} type={o.type} placeholder={o.placeholder} />)}
 					</FormGroup>
 				))}	
-				{extraInformation.length ? <Footer> 
+				{extraInformation ? <Footer> 
 					<tbody>
 						<tr>
 							<td colSpan={2}><Dash /></td> 

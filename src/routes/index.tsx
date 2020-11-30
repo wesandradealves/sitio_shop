@@ -10,6 +10,7 @@ import NotFound from './../pages/NotFound/NotFound';
 import SignIn from './../pages/SignIn/SignIn';
 import Shop from './../pages/Shop/Shop';
 import Checkout from './../pages/Checkout/Checkout';
+import Thanks from './../pages/Thanks/Thanks';
 import ProtectedRoute from './ProtectedRoute';
 
 const Routes: React.FC = () => {
@@ -19,6 +20,7 @@ const Routes: React.FC = () => {
         <Route exact={true} path="/" component={SignIn} />
         <ProtectedRoute exact={true} path="/shop" component={Shop} />
         <ProtectedRoute exact={true} path="/checkout" component={Checkout} />
+        <ProtectedRoute exact={true} path="/thanks" component={Thanks} />
         <Route exact={true} path="*" component={NotFound} />
       </Switch>
     </MainLayout>

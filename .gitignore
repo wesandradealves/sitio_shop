@@ -6,6 +6,7 @@
 .pnp.js
 _old
 sitio_email_api_demo
+sitio_dbapi
 # testing
 /coverage
 
