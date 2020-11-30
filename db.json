@@ -1,0 +1,104 @@
+{
+   "products":[
+      {
+         "id":1,
+         "name":"Flor de capuchinha",
+         "brand":"",
+         "category":[
+            0
+         ],
+         "packageType":"bandeja",
+         "packageOptions":{
+            "weight":"15g",
+            "qti":""
+         },
+         "cert":"Cert. IBD",
+         "price":12.00,
+         "thumbnail":"/static/p1.png",
+         "description":"Texto sobre o produto. Só aparece quando a pessoa clica no ícone de saiba mais no canto da foto. O box com o nome “sobe” por cima da foto e esse texto fica visível."
+      },
+      {
+         "id":2,
+         "name":"Pão de hambúrguer rústico",
+         "brand":"",
+         "category":[
+            3,
+            4
+         ],
+         "packageType":"pct",
+         "packageOptions":{
+            "weight":"",
+            "qti":"4un"
+         },
+         "cert":"Cert. IBD",
+         "price":12.00,
+         "thumbnail":"/static/p2.png",
+         "description":"Texto sobre o produto. Só aparece quando a pessoa clica no ícone de saiba mais no canto da foto. O box com o nome “sobe” por cima da foto e esse texto fica visível."
+      },
+      {
+         "id":3,
+         "name":"Filé de peito de frango",
+         "brand":"Korin",
+         "category":[
+            5
+         ],
+         "packageType":"pct",
+         "packageOptions":{
+            "weight":"600g",
+            "qti":""
+         },
+         "cert":"Cert. IBD",
+         "price":12.00,
+         "thumbnail":"/static/p3.png",
+         "description":"Texto sobre o produto. Só aparece quando a pessoa clica no ícone de saiba mais no canto da foto. O box com o nome “sobe” por cima da foto e esse texto fica visível."
+      }
+   ],
+   "users":[
+      {
+         "id":0,
+         "name":"Admin",
+         "username":"admin",
+         "password":"admin",
+         "cod_cliente":"#USR00#",
+         "isActive":true
+      }
+   ],
+   "categories":[
+      {
+         "id":0,
+         "name":"Verduras",
+         "slug":"verduras",
+         "isActive":true
+      },
+      {
+         "id":1,
+         "name":"Legumes",
+         "slug":"legumes",
+         "isActive":true
+      },
+      {
+         "id":2,
+         "name":"Frutas",
+         "slug":"frutas",
+         "isActive":true
+      },
+      {
+         "id":3,
+         "name":"Pães",
+         "slug":"paes",
+         "isActive":true
+      },
+      {
+         "id":4,
+         "name":"Semi Assados",
+         "slug":"semi-assados",
+         "isActive":true
+      },
+      {
+         "id":5,
+         "name":"Carne e Frango",
+         "slug":"carne-e-frango",
+         "isActive":true
+      }
+   ]
+}
